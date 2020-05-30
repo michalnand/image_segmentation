@@ -9,7 +9,7 @@ dataset = Dataset("dataset_config_training.json", "dataset_config_testing.json")
 testing_loss_sum_best = None
 
 epoch_count     = 100
-learning_rates  = [0.0001, 0.0001, 0.0001, 0.0001, 0.0001, 0.0001, 0.0001, 0.0001, 0.00001, 0.00001]
+learning_rates  = [0.001, 0.001, 0.0001, 0.0001, 0.0001, 0.0001, 0.0001, 0.0001, 0.00001, 0.00001]
 
 model = Model(dataset.training.input_shape, dataset.training.output_shape[0])
 
