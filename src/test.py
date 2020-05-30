@@ -13,11 +13,11 @@ def show(input, output):
     height      = input.shape[0]
     input_rgb   = numpy.array([input, input, input])
 
-    mask = numpy.ones(output.shape)*0.1 < output
+    #mask = numpy.ones(output.shape)*0.1 < output
 
     k = 0.5
     input_rgb[0] = (1.0 - k)*input_rgb[0]
-    input_rgb[1] = (1.0 - k)*input_rgb[1]  + k*mask
+    input_rgb[1] = (1.0 - k)*input_rgb[1]  + k*output
     input_rgb[2] = (1.0 - k)*input_rgb[2]
 
     result = input_rgb

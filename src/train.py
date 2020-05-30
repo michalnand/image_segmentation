@@ -1,5 +1,5 @@
 from dataset import Dataset
-from models.net_1.model import Model
+from models.net_2.model import Model
 import torch
 import metrics
 
@@ -69,10 +69,9 @@ for epoch in range(epoch_count):
     if testing_loss_sum < testing_loss_sum_best:
         testing_loss_sum_best = testing_loss_sum
         save_model = True
-
-
+ 
     if save_model:
-        model.save("models/net_1/")
+        model.save("models/net_2/")
 
         print("\n\n\n")
         print("new best net in ", epoch, "\n")

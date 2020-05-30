@@ -40,7 +40,7 @@ class Model(torch.nn.Module):
 
                         nn.Conv2d(64, outputs_count, kernel_size=1, stride=1, padding=0),
 
-                        nn.Upsample(scale_factor=16, mode='bilinear')
+                        nn.Upsample(scale_factor=16, mode='nearest')
                     ]
 
         for i in range(len(self.layers)):
