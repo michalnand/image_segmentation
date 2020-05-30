@@ -8,7 +8,7 @@
     "noise_level"       : 0.3,
     "crop_area_level"   : 0.8,
 
-    "augmentations_count" : 4,
+    "augmentations_count" : 16,
 
     "input_path"    : "/Users/michal/dataset/human_detection/training/input/",
     "target_path"   : "/Users/michal/dataset/human_detection/training/target/"
