@@ -17,72 +17,55 @@ class Model(torch.nn.Module):
         input_channels  = self.input_shape[0]
        
 
-        self.encoder_layers = [ 
-                                nn.Conv2d(input_channels, 8, kernel_size=3, stride=2, padding=1),
-                                nn.ReLU(), 
-                                nn.Conv2d(8, 8, kernel_size=3, stride=1, padding=1),
-                                nn.ReLU(),
+        self.layers = [ 
+                        nn.Conv2d(input_channels, 8, kernel_size=3, stride=2, padding=1),
+                        nn.ReLU(), 
+                        nn.Conv2d(8, 16, kernel_size=3, stride=1, padding=1),
+                        nn.ReLU(),
 
-                                nn.Conv2d(8, 16, kernel_size=3, stride=2, padding=1),
-                                nn.ReLU(), 
-                                nn.Conv2d(16, 16, kernel_size=3, stride=1, padding=1),
-                                nn.ReLU(),
+                        nn.Conv2d(16, 32, kernel_size=3, stride=2, padding=1),
+                        nn.ReLU(), 
+                        nn.Conv2d(32, 32, kernel_size=3, stride=1, padding=1),
+                        nn.ReLU(),
 
-                                nn.Conv2d(16, 32, kernel_size=3, stride=2, padding=1),
-                                nn.ReLU(), 
-                                nn.Conv2d(32, 32, kernel_size=3, stride=1, padding=1),
-                                nn.ReLU(),
+                        nn.Conv2d(32, 64, kernel_size=3, stride=2, padding=1),
+                        nn.ReLU(), 
+                        nn.Conv2d(64, 64, kernel_size=3, stride=1, padding=1),
+                        nn.ReLU(),
+ 
+                        nn.Conv2d(64, 64, kernel_size=3, stride=2, padding=1),
+                        nn.ReLU(), 
+                        nn.Conv2d(64, 64, kernel_size=3, stride=1, padding=1),
+                        nn.ReLU(),  
 
-                                nn.Conv2d(32, 64, kernel_size=3, stride=2, padding=1),
-                                nn.ReLU(), 
-                                nn.Conv2d(64, 64, kernel_size=3, stride=1, padding=1),
-                                nn.ReLU(), 
+                        nn.Conv2d(64, outputs_count, kernel_size=1, stride=1, padding=0),
 
-                                nn.Upsample(scale_factor=16, mode='nearest')
-                            ]
-        
-        self.decoder_layers = [
-                                nn.Conv2d(64 + input_channels, 32, kernel_size=3, stride=1, padding=1),
-                                nn.ReLU(),
-                                nn.Conv2d(32, 32, kernel_size=3, stride=1, padding=1),
-                                nn.ReLU(), 
-                                nn.Conv2d(32, outputs_count, kernel_size=1, stride=1, padding=0)
-                            ]
+                        nn.Upsample(scale_factor=16, mode='bilinear')
+                    ]
 
-        for i in range(len(self.encoder_layers)):
-            if hasattr(self.encoder_layers[i], "weight"):
-                torch.nn.init.xavier_uniform_(self.encoder_layers[i].weight)
+        for i in range(len(self.layers)):
+            if hasattr(self.layers[i], "weight"):
+                torch.nn.init.xavier_uniform_(self.layers[i].weight)
 
-        for i in range(len(self.decoder_layers)):
-            if hasattr(self.decoder_layers[i], "weight"):
-                torch.nn.init.xavier_uniform_(self.decoder_layers[i].weight)
+        self.model = nn.Sequential(*self.layers)
+        self.model.to(self.device)
 
-        self.encoder = nn.Sequential(*self.encoder_layers)
-        self.encoder.to(self.device)
-
-        self.decoder = nn.Sequential(*self.decoder_layers)
-        self.decoder.to(self.device)
-
-        print(self.encoder)
-        print(self.decoder)
-
+        print(self.model)
 
     def forward(self, input):
-        features = self.encoder(input)
-        decoder_input = torch.cat((features, input), 1)
-
-        return self.decoder.forward(decoder_input)
+        return self.model.forward(input)
    
     def save(self, path):
-        torch.save(self.encoder.state_dict(), path + "trained/encoder.pt")
-        torch.save(self.decoder.state_dict(), path + "trained/decoder.pt")
+        name = path + "trained/model.pt"
+        print("saving", name)
+        torch.save(self.model.state_dict(), name)
 
     def load(self, path):
-        self.encoder.load_state_dict(torch.load(path + "trained/encoder.pt", map_location = self.device))
-        self.encoder.eval() 
+        name = path + "trained/model.pt"
+        print("loading", name)
 
-        self.decoder.load_state_dict(torch.load(path + "trained/decoder.pt", map_location = self.device))
-        self.decoder.eval() 
+        self.model.load_state_dict(torch.load(name, map_location = self.device))
+        self.model.eval() 
 
 
 if __name__ == "__main__":
@@ -91,7 +74,7 @@ if __name__ == "__main__":
 
     model = Model(input_shape, outputs_count)
 
-    input = torch.rand((4,) + input_shape)
+    input = torch.rand((1,) + input_shape)
 
     output = model.forward(input)
 
