@@ -38,9 +38,9 @@ class Model(torch.nn.Module):
                         nn.Conv2d(64, 64, kernel_size=3, stride=1, padding=1),
                         nn.ReLU(), 
 
-                        nn.Conv2d(64, outputs_count, kernel_size=1, stride=1, padding=0)
+                        nn.Conv2d(64, outputs_count, kernel_size=1, stride=1, padding=0),
 
-                        nn.Upsample(scale_factor=16, mode='nearest')
+                        nn.Upsample(scale_factor=16, mode='bilinear')
                     ]
 
         for i in range(len(self.layers)):
@@ -52,8 +52,8 @@ class Model(torch.nn.Module):
 
         print(self.model)
 
-    def forward(self, state):
-        return self.model.forward(state)
+    def forward(self, input):
+        return self.model.forward(input)
    
     def save(self, path):
         name = path + "trained/model.pt"
