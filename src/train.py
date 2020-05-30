@@ -8,14 +8,14 @@ dataset = Dataset("dataset_config_training.json", "dataset_config_testing.json")
 
 testing_loss_sum_best = None
 
-epoch_count     = 32
+epoch_count     = 100
 learning_rates  = [0.0001, 0.0001, 0.0001, 0.0001, 0.0001, 0.0001, 0.0001, 0.0001, 0.00001, 0.00001]
 
 model = Model(dataset.training.input_shape, dataset.training.output_shape[0])
 
 for epoch in range(epoch_count):
     
-    batch_size  = 4 
+    batch_size  = 32 
     batch_count = (dataset.training.get_count()+batch_size) // batch_size
 
     learning_rate = learning_rates[epoch%len(learning_rates)]
