@@ -38,9 +38,12 @@ class Model(torch.nn.Module):
                         nn.Conv2d(64, 64, kernel_size=3, stride=1, padding=1),
                         nn.ReLU(),  
 
-                        nn.Conv2d(64, outputs_count, kernel_size=1, stride=1, padding=0),
+                        nn.Upsample(scale_factor=16, mode='nearest'),
 
-                        nn.Upsample(scale_factor=16, mode='nearest')
+                        nn.Conv2d(64, 16, kernel_size=3, stride=1, padding=1),
+                        nn.ReLU(),  
+                        nn.Conv2d(16, outputs_count, kernel_size=1, stride=1, padding=0)
+
                     ]
 
         for i in range(len(self.layers)):
